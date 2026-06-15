@@ -1,0 +1,31 @@
+# Hostinger / Apache configuration for this Vite single-page app.
+# Copied into the build output (dist/) automatically by Vite.
+
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+
+  # Serve existing files and directories directly (JS, CSS, images, etc.).
+  RewriteCond %{REQUEST_FILENAME} -f [OR]
+  RewriteCond %{REQUEST_FILENAME} -d
+  RewriteRule ^ - [L]
+
+  # SPA fallback: route anything else back to index.html so deep links and
+  # page refreshes do not return a 404 / blank page. Relative target keeps
+  # this working from a domain root or a subfolder.
+  RewriteRule ^ index.html [L]
+</IfModule>
+
+# Make sure JavaScript modules are served with the correct MIME type.
+<IfModule mod_mime.c>
+  AddType application/javascript .js .mjs
+  AddType text/css .css
+  AddType image/svg+xml .svg
+</IfModule>
+
+# Long-term caching for fingerprinted assets (safe: filenames change on rebuild).
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 month"
+</IfModule>
